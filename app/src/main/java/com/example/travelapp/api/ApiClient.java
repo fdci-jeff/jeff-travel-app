@@ -1,12 +1,9 @@
 package com.example.travelapp.api;
 
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.core5.http.impl.io.DefaultBHttpServerConnection;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 
