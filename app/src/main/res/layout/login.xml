@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,60 +19,66 @@
         <EditText
             android:id="@+id/username"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/login_custom_input"
-            android:hint="Username/Email"
+            android:hint="@string/login_username_email"
             android:inputType="textEmailAddress"
-            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="0dp"
             android:selectAllOnFocus="true"
             android:textColorHint="#000000"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/password"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/login_custom_input"
-            android:hint="Password"
+            android:hint="@string/prompt_password"
             android:inputType="textPassword"
-            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:selectAllOnFocus="true"
-            android:textColorHint="#000000"
-            android:textSize="20sp" />
+            android:textColorHint="@color/black"
+            android:textSize="20sp"
+            android:autofillHints="" />
 
         <CheckBox
             android:id="@+id/saveLoginCredentials"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Remember Me"
+            android:text="@string/login_remember_me"
             android:textColor="#000000"
-            android:hint="#000000"
+            android:hint="@string/black"
             android:layout_marginTop="15dp"
-            android:layout_marginLeft="-85dp"
+            android:layout_marginStart="-85dp"
             android:buttonTint="#000000"
             />
 
         <Button
             android:id="@+id/btn_login"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/login_button"
-            android:text="Sign In"
+            android:text="@string/login_button"
             android:textAllCaps="false"
-            android:textColor="#FFFBF6" />
+            android:textColor="#FFFBF6"
+            tools:ignore="TextContrastCheck" />
 
         <Button
             android:id="@+id/btn_register"
             android:layout_width="300dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/login_button"
-            android:text="Register"
+            android:text="@string/login_register"
             android:textAllCaps="false"
-            android:textColor="#FFFBF6" />
+            android:textColor="#FFFBF6"
+            tools:ignore="TextContrastCheck" />
 
         <View
             android:layout_width="fill_parent"
@@ -85,11 +90,10 @@
             android:id="@+id/forgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Forget Password"
-            android:textSize="18dp"
             android:layout_marginTop="15dp"
-            android:textColor="@color/gold"
-            />
+            android:text="@string/login_forgot_password"
+            android:textColor="#DD2C00"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
