@@ -16,7 +16,6 @@ public class UserResponse extends BaseResponse{
     @SerializedName("user")
     User user;
 
-
     public String getStatus() {
         return status;
     }

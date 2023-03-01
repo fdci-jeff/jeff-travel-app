@@ -14,7 +14,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("api/auth/login")
-    Call<UserResponse> postLogin(@Field("email") String email, @Field("password") String password);
+    Call<UserResponse> postLogin(@Field("username") String email, @Field("password") String password);
 
     @GET("api/auth/profile")
     Call<User> getUser(@Header("Authorization") String token);

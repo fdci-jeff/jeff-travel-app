@@ -6,33 +6,46 @@ import android.content.SharedPreferences;
 public class SharedPrefManager {
     public static final String SP_LOGIN_APP = "spLoginApp";
 
-    public static final String NAME = "Name";
-    public static final String Email = "Email";
-    public static final String TOKEN = "Token";
+    public static final String NAME = "name";
+    public static final String Email = "email";
+    public static final String TOKEN = "token";
 
     public static final String SP_LOGIN = "spJeffLogin";
+
+    private Context mCtx;
 
     SharedPreferences sp;
     SharedPreferences.Editor spEditor;
 
-    public SharedPrefManager(Context context){
-        sp = context.getSharedPreferences(SP_LOGIN_APP, Context.MODE_PRIVATE);
-        spEditor = sp.edit();
+//    public SharedPrefManager(Context context){
+//        sp = context.getSharedPreferences(SP_LOGIN_APP, Context.MODE_PRIVATE);
+//        spEditor = sp.edit();
+//        spEditor.apply();
+//    }
+
+    public SharedPrefManager(Context mCtx) {
+        this.mCtx = mCtx;
     }
 
     public void saveSPString(String keySP, String value){
-        spEditor.putString(keySP, value);
-        spEditor.commit();
+        sp = mCtx.getSharedPreferences(SP_LOGIN_APP, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(keySP, value);
+        editor.apply();
     }
 
     public void saveSPInt(String keySP, int value){
-        spEditor.putInt(keySP, value);
-        spEditor.commit();
+        sp = mCtx.getSharedPreferences(SP_LOGIN_APP, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(keySP, value);
+        editor.apply();
     }
 
     public void saveSPBoolean(String keySP, boolean value){
-        spEditor.putBoolean(keySP, value);
-        spEditor.commit();
+        sp = mCtx.getSharedPreferences(SP_LOGIN_APP, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(keySP, value);
+        editor.apply();
     }
 
     public String getName(){
@@ -47,7 +60,8 @@ public class SharedPrefManager {
         return sp.getString(TOKEN, "");
     }
 
-    public Boolean getLogin(){
-        return sp.getBoolean(SP_LOGIN, false);
+    public boolean getLogin(){
+        sp = mCtx.getSharedPreferences(SP_LOGIN_APP, Context.MODE_PRIVATE);
+        return sp.getBoolean(SP_LOGIN_APP, false);
     }
 }

@@ -1,10 +1,10 @@
 package com.example.travelapp.network.interceptor;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 
 import com.example.travelapp.LoginActivity;
 import com.example.travelapp.MainActivity;
+import com.example.travelapp.MyApp;
 import com.example.travelapp.network.ApiClient;
 import com.example.travelapp.network.ApiInterface;
 import com.example.travelapp.network.response.UserResponse;
@@ -20,7 +20,7 @@ public class TokenAuthenticator implements Interceptor {
     SharedPrefManager sharedPrefManager;
 
     public TokenAuthenticator() {
-        sharedPrefManager = new SharedPrefManager(MainActivity.getContext());
+        sharedPrefManager = new SharedPrefManager(MyApp.getContext());
     }
 
     @Override
@@ -41,10 +41,10 @@ public class TokenAuthenticator implements Interceptor {
             }
         } else if (mainResponse.code() == 500) {
             sharedPrefManager.saveSPBoolean(SharedPrefManager.SP_LOGIN, false);
-            Intent i = new Intent(MainActivity.getContext(), LoginActivity.class);
+            Intent i = new Intent(MyApp.getContext(), LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            MainActivity.getContext().startActivity(i);
+            MyApp.getContext().startActivity(i);
         }
         return  mainResponse;
     }
