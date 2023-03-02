@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameText.getText().toString();
                 String password = passwordText.getText().toString();
 
-
+                login(username, password);
             }
         });
     }
