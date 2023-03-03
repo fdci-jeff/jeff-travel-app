@@ -7,13 +7,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -31,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText usernameText;
     EditText passwordText;
     Button loginButton;
+    Button registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         usernameText = findViewById(R.id.username);
         passwordText = findViewById(R.id.password);
         loginButton = findViewById(R.id.btn_login);
+        registerButton = findViewById(R.id.btn_register);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,16 +55,40 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameText.getText().toString();
                 String password = passwordText.getText().toString();
 
+                // Validate username and password
+                if (TextUtils.isEmpty(username)) {
+                    usernameText.setError("Username is required");
+                    usernameText.requestFocus();
+                    return;
+                }
+
+                if (TextUtils.isEmpty(password)) {
+                    passwordText.setError("Password is required");
+                    passwordText.requestFocus();
+                    return;
+                }
+
                 login(username, password);
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     private void login(String username, String password) {
         OkHttpClient okHttpClient = new OkHttpClient();
-
         MediaType mediaType = MediaType.parse("application/json");
-        String requestBody = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
+
+        String requestBody = "" +
+                "{\"username\":\"" + username +
+                "\",\"password\":\"" + password + "\"}";
+
         RequestBody body = RequestBody.create(requestBody, mediaType);
 
         Request request = new Request.Builder()
@@ -75,13 +104,20 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Log.d("test", "onResponse: " + response);
                 if (response.isSuccessful()) {
-                    String token = response.body().string();
+                    String responseBody = response.body().string();
 
-                    SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("token", token);
-                    editor.apply();
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        String token = jsonObject.getString("access_token");
+                        SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("token", token);
+                        editor.apply();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -90,7 +126,19 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     // Handle login failure
                     String error = response.body().string();
-                    Log.e("LoginActivity", "Login error: " + error);
+                    Log.d("test", "onResponse: " + error);
+                    try {
+                        JSONObject jsonObject = new JSONObject(error);
+                        String errorMessage = jsonObject.getString("error");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
