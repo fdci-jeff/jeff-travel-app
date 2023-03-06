@@ -49,35 +49,29 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.btn_login);
         registerButton = findViewById(R.id.btn_register);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username = usernameText.getText().toString();
-                String password = passwordText.getText().toString();
+        loginButton.setOnClickListener(view -> {
+            String username = usernameText.getText().toString();
+            String password = passwordText.getText().toString();
 
-                // Validate username and password
-                if (TextUtils.isEmpty(username)) {
-                    usernameText.setError("Username is required");
-                    usernameText.requestFocus();
-                    return;
-                }
-
-                if (TextUtils.isEmpty(password)) {
-                    passwordText.setError("Password is required");
-                    passwordText.requestFocus();
-                    return;
-                }
-
-                login(username, password);
+            // Validate username and password
+            if (TextUtils.isEmpty(username)) {
+                usernameText.setError("Username is required");
+                usernameText.requestFocus();
+                return;
             }
+
+            if (TextUtils.isEmpty(password)) {
+                passwordText.setError("Password is required");
+                passwordText.requestFocus();
+                return;
+            }
+
+            login(username, password);
         });
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        registerButton.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -130,12 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(error);
                         String errorMessage = jsonObject.getString("error");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        runOnUiThread(() -> Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

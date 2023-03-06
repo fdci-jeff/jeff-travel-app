@@ -22,4 +22,6 @@
     <string name="register_username">Username</string>
     <string name="register_email">Email</string>
     <string name="prompt_password_confirmation">Confirm Password</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_favorite">Favorite</string>
 </resources>
