@@ -52,11 +52,14 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     Log.d("home", "home");
                     return true;
-                case R.id.navigation_favourite:
-                    Log.d("favorite", "favorite");
+                case R.id.navigation_search:
+                    Log.d("searc", "search");
                     return true;
                 case R.id.navigation_profile:
                     Log.d("profile", "profile");
+                    return true;
+                case R.id.navigation_bookmark:
+                    Log.d("bookmark", "bookmark");
                     return true;
                 default:
                     return false;

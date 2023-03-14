@@ -6,6 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        tools:ignore="MissingConstraints"
+        android:background="#FFFFFF"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/logo_image_view"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src=""
+            android:contentDescription=""/>
+
+        <ImageView
+            android:id="@+id/notification_background"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_notifications"
+            app:tint="#000000" />
+
+    </RelativeLayout>
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
