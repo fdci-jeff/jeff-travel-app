@@ -9,13 +9,16 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -29,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
 
     private final OkHttpClient okHttpClient = new OkHttpClient();
 
+    private ViewPager mViewPager;
+    private ImagerSlideAdapter mImageSliderAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -37,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         actionBar.hide();
         setContentView(R.layout.activity_main);
 
+        mViewPager = findViewById(R.id.view_pager);
+
         String token = getTokenFromSharedPreferences();
         if (token != null && !token.isEmpty()) {
             checkToken(token);
@@ -44,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
         }
+
+        fetchImages(token);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 
@@ -65,6 +76,53 @@ public class MainActivity extends AppCompatActivity {
                     return false;
             }
         });
+    }
+
+    private void fetchImages(String token) {
+
+        String query = "token=" + token + "&page=1";
+        Request request = new Request.Builder()
+                .url("http://10.0.2.2:8000/api/user/get_news" + "?" + query)
+                .get()
+                .build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String json = response.body().string();
+                Log.d("test", json);
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    boolean success = jsonObject.getBoolean("success");
+                    ArrayList<String> imageUrls = new ArrayList<>();
+                    if (success) {
+                        JSONArray newsArray = jsonObject.getJSONArray("news");
+
+                        for (int i = 0; i < newsArray.length(); i++) {
+                            JSONObject newsObject = newsArray.getJSONObject(i);
+                            if (!newsObject.isNull("image")) {
+                                String imageUrl = newsObject.getString("image");
+                                imageUrls.add(imageUrl);
+                            }
+                        }
+                        Log.d("test", "response" + imageUrls);
+                        showImages(imageUrls);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    private void showImages(final ArrayList<String> imageUrls){
+        runOnUiThread(() -> mViewPager.setAdapter(new ImagerSlideAdapter(MainActivity.this, imageUrls)));
     }
 
     private void checkToken(String token){
@@ -101,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("test", "response" + responseBody);
                     try {
                         JSONObject jsonObject = new JSONObject(responseBody);
-                        String userId = jsonObject.getString("id");
-                        Log.d("test", "response" + userId);
+//                        String userId = jsonObject.getJSONArray('user');
+                        Log.d("test", "response" + jsonObject);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
