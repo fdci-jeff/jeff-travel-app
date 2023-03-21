@@ -3,8 +3,10 @@ package com.example.travelapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -12,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private ImagerSlideAdapter mImageSliderAdapter;
+    private ArrayList<String> imageUrls = new ArrayList<>();
 
+    private ArrayList<String> imageTexts = new ArrayList<>();
+
+    private Handler slideHandler = new Handler();
+    private int currentImageIndex = 0;
+
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     boolean success = jsonObject.getBoolean("success");
-                    ArrayList<String> imageUrls = new ArrayList<>();
                     if (success) {
                         JSONArray newsArray = jsonObject.getJSONArray("news");
 
@@ -107,11 +117,13 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject newsObject = newsArray.getJSONObject(i);
                             if (!newsObject.isNull("image")) {
                                 String imageUrl = newsObject.getString("image");
+                                String title = newsObject.getString("title");
                                 imageUrls.add(imageUrl);
+                                imageTexts.add(title);
                             }
                         }
                         Log.d("test", "response" + imageUrls);
-                        showImages(imageUrls);
+                        showImages(imageUrls, imageTexts);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -121,8 +133,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showImages(final ArrayList<String> imageUrls){
-        runOnUiThread(() -> mViewPager.setAdapter(new ImagerSlideAdapter(MainActivity.this, imageUrls)));
+    private void showImages(final ArrayList<String> imageUrls, final ArrayList<String> imageTexts){
+        runOnUiThread(() -> {
+            mViewPager.setAdapter(new ImagerSlideAdapter(MainActivity.this, imageUrls, imageTexts));
+        });
     }
 
     private void checkToken(String token){
@@ -172,5 +186,35 @@ public class MainActivity extends AppCompatActivity {
     private String getTokenFromSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         return  sharedPreferences.getString("token", null);
+    }
+
+    private Runnable slideRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int currentPage = mViewPager.getCurrentItem();
+            int nextPage = currentPage + 1;
+
+            ImagerSlideAdapter adapter = new ImagerSlideAdapter(MainActivity.this, imageUrls, imageTexts);
+
+            if (nextPage >= adapter.getCount()) {
+                nextPage = 0;
+            }
+
+            mViewPager.setCurrentItem(nextPage);
+
+            slideHandler.postDelayed(this, 3000);
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        slideHandler.postDelayed(slideRunnable, 3000);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        slideHandler.removeCallbacks(slideRunnable);
     }
 }

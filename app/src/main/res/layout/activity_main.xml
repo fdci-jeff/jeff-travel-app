@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         tools:ignore="MissingConstraints"
-        android:background="#FFFFFF"
-        android:elevation="4dp">
+        android:background="#FFFFFF">
 
         <ImageView
             android:id="@+id/logo_image_view"
@@ -36,21 +35,25 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal|top"
-            android:orientation="vertical">
+            android:contentDescription="TEST"/>
 
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"/>
+        <LinearLayout
+            android:id="@+id/dot_layout"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="10dp" />
 
-        </LinearLayout>
     </RelativeLayout>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"

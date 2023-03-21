@@ -1,5 +1,7 @@
 package com.example.travelapp;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -19,19 +22,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImagerSlideAdapter extends PagerAdapter {
-    private ArrayList<String> imageUrls;
-    private Context context;
-    private LayoutInflater mInflater;
+    private final ArrayList<String> imageUrls;
+    private final LayoutInflater mInflater;
 
-    public ImagerSlideAdapter(Context context, ArrayList<String> imageUrls) {
-        this.context = context;
+    private final ArrayList<String> imageTexts;
+
+    private int currentPosition = Integer.MAX_VALUE / 2;
+
+    public ImagerSlideAdapter(Context context, ArrayList<String> imageUrls, ArrayList<String> imageTexts) {
         this.imageUrls = imageUrls;
         this.mInflater = LayoutInflater.from(context);
+        this.imageTexts = imageTexts;
     }
 
     @Override
     public int getCount() {
-        return imageUrls.size();
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -40,10 +46,13 @@ public class ImagerSlideAdapter extends PagerAdapter {
     }
 
     public Object instantiateItem(ViewGroup container, int position) {
-        ImageView imageView = new ImageView(context);
-        Picasso.get().load(imageUrls.get(position)).into(imageView);
-        container.addView(imageView);
-        return imageView;
+        View view = mInflater.inflate(R.layout.image_slide_item, container, false);
+        ImageView imageView = view.findViewById(R.id.image_view);
+        TextView textView = view.findViewById(R.id.image_text_view);
+        Picasso.get().load(imageUrls.get(position % imageUrls.size())).fit().centerInside().into(imageView);
+        textView.setText(imageTexts.get(position % imageUrls.size()));
+        container.addView(view);
+        return view;
     }
 
     @Override
