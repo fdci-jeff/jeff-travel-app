@@ -1,6 +1,5 @@
 package com.example.travelapp;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -48,6 +47,10 @@ public class LatestFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private ArrayList<String> temp_data;
+
+    private List<NewsLatestModel> news_data = new ArrayList<>();
+
     public LatestFragment() {
         // Required empty public constructor
     }
@@ -93,47 +96,16 @@ public class LatestFragment extends Fragment {
         return view;
     }
 
-    public List<NewsLatestModel> getData() {
-        String token = getArguments().getString("token");
-        List<NewsLatestModel> data = new ArrayList<>();
 
-        String query = "token=" + token + "&page=1";
+    private List<NewsLatestModel> getData() {
+        ArrayList<String> temp_latest = getArguments().getStringArrayList("latest");
+        Log.d("fragment", "getData: " + temp_latest);
+        news_data = new ArrayList<>();
+        news_data.add(new NewsLatestModel("title1"));
+        news_data.add(new NewsLatestModel("title1"));
+        news_data.add(new NewsLatestModel("title1"));
+        news_data.add(new NewsLatestModel("title1"));
 
-        Request request = new Request.Builder()
-                .url("http://10.0.2.2:8000/api/user/get_latest_news" + "?" + query)
-                .get()
-                .build();
-
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String json = response.body().string();
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    boolean success = jsonObject.getBoolean("success");
-
-                    if (success) {
-                        JSONArray newsArray = jsonObject.getJSONArray("news");
-
-                        for (int i = 0; i < newsArray.length(); i++) {
-                            JSONObject newsObject = newsArray.getJSONObject(i);
-                            if (!newsObject.isNull("image")) {
-                                String title = newsObject.getString("title");
-                                data.add(new NewsLatestModel(title));
-                            }
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        return  data;
+        return news_data;
     }
 }

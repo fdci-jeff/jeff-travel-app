@@ -129,7 +129,6 @@ public class RegisterActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                return null;
             }
         });
     }
