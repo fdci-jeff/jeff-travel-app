@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private final OkHttpClient okHttpClient = new OkHttpClient();
 
     private ViewPager mViewPager;
+    private ViewPager tViewPager;
     private ImagerSlideAdapter mImageSliderAdapter;
     private ArrayList<String> imageUrls = new ArrayList<>();
 
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView imageView;
 
+    private TabLayout tabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mViewPager = findViewById(R.id.view_pager);
+        tViewPager = findViewById(R.id.tab_view_pager);
+        tabLayout = findViewById(R.id.category_tab);
 
         String token = getTokenFromSharedPreferences();
         if (token != null && !token.isEmpty()) {
@@ -66,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         fetchImages(token);
+
+        TabPageAdapter tabPageAdapter = new TabPageAdapter(getSupportFragmentManager(), token);
+        tViewPager.setAdapter(tabPageAdapter);
+        tabLayout.setupWithViewPager(tViewPager);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 
