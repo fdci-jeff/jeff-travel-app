@@ -36,11 +36,6 @@ public class TabPageAdapter extends FragmentPagerAdapter {
     private final int[] TAB_ICONS = {R.drawable.latest_star, R.drawable.general, R.drawable.sports};
 
     private String token;
-
-    private final OkHttpClient okHttpClient = new OkHttpClient();
-
-    private ArrayList<String> temp_latest;
-
     public TabPageAdapter(FragmentManager fm, String token) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.token = token;
@@ -53,50 +48,8 @@ public class TabPageAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0:
                 LatestFragment latestFragment = new LatestFragment();
-                temp_latest = new ArrayList<>();
-                String query = "token=" + token + "&page=1";
                 Bundle args = new Bundle();
-
                 args.putString("token", token);
-
-                Request request = new Request.Builder()
-                        .url("http://10.0.2.2:8000/api/user/get_latest_news" + "?" + query)
-                        .get()
-                        .build();
-
-                okHttpClient.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        String json = response.body().string();
-                        try {
-                            JSONObject jsonObject = new JSONObject(json);
-                            boolean success = jsonObject.getBoolean("success");
-
-                            if (success) {
-                                JSONArray newsArray = jsonObject.getJSONArray("news");
-
-                                for (int i = 0; i < newsArray.length(); i++) {
-                                    JSONObject newsObject = newsArray.getJSONObject(i);
-                                    if (!newsObject.isNull("image")) {
-                                        String title = newsObject.getString("title");
-                                        temp_latest.add(title);
-                                    }
-                                }
-
-                                args.putStringArrayList("latest", temp_latest);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                Log.d("test", "getItem: " + temp_latest);
                 latestFragment.setArguments(args);
                 return latestFragment;// Return the Fragment for tab one
             case 1:
@@ -125,44 +78,5 @@ public class TabPageAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return 3;
-    }
-
-    private void fetchLatest() {
-        String query = "token=" + token + "&page=1";
-
-        Request request = new Request.Builder()
-                .url("http://10.0.2.2:8000/api/user/get_latest_news" + "?" + query)
-                .get()
-                .build();
-
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String json = response.body().string();
-                try {
-                    JSONObject jsonObject = new JSONObject(json);
-                    boolean success = jsonObject.getBoolean("success");
-
-                    if (success) {
-                        JSONArray newsArray = jsonObject.getJSONArray("news");
-
-                        for (int i = 0; i < newsArray.length(); i++) {
-                            JSONObject newsObject = newsArray.getJSONObject(i);
-                            if (!newsObject.isNull("image")) {
-                                String title = newsObject.getString("title");
-                                temp_latest.add(title);
-                            }
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 }

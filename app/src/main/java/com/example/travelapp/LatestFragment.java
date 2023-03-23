@@ -25,6 +25,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +36,7 @@ public class LatestFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private final OkHttpClient okHttpClient = new OkHttpClient();
+    private OkHttpClient okHttpClient;
 
     private NewsLatestAdapter newsLatestAdapter;
     // TODO: Rename parameter arguments, choose names that match
@@ -90,10 +91,48 @@ public class LatestFragment extends Fragment {
         recyclerView = view.findViewById(R.id.myRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setNestedScrollingEnabled(false);
-        newsLatestAdapter = new NewsLatestAdapter(getData());
+        String token = getArguments().getString("token");
+        String query = "token=" + token + "&page=1";
+        okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+
+        Request request = new Request.Builder()
+                .url("http://10.0.2.2:8000/api/user/get_latest_news" + "?" + query)
+                .build();
+
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String json = response.body().string();
+                try {
+                    JSONObject jsonObject = new JSONObject(json);
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        List<NewsLatestModel> news_data = parseResponse(jsonObject);
+                        newsLatestAdapter = new NewsLatestAdapter(news_data);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         recyclerView.setAdapter(newsLatestAdapter);
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Cancel any pending requests when the view is destroyed
+        okHttpClient.dispatcher().cancelAll();
     }
 
 
@@ -107,5 +146,38 @@ public class LatestFragment extends Fragment {
         news_data.add(new NewsLatestModel("title1"));
 
         return news_data;
+    }
+
+    private List<NewsLatestModel> parseResponse(JSONObject responseBody) {
+
+        List<NewsLatestModel> data = new ArrayList<>();
+
+        try {
+            JSONArray newsArray = responseBody.getJSONArray("news");
+
+            for (int i = 0; i < newsArray.length(); i++) {
+                JSONObject newsObject = newsArray.getJSONObject(i);
+
+                if (!newsObject.isNull("image")) {
+                    String title = newsObject.getString("title");
+                    NewsLatestModel item = new NewsLatestModel(title);
+                    data.add(item);
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+//        JSONArray newsArray = responseBody.getJSONArray("news");
+//
+//        for (int i = 0; i < newsArray.length(); i++) {
+//            JSONObject newsObject = newsArray.getJSONObject(i);
+//            if (!newsObject.isNull("image")) {
+//                String title = newsObject.getString("title");
+//                temp_latest.add(title);
+//            }
+//        }
+        return  data;
     }
 }
