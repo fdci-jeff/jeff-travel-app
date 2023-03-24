@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 public class NewsLatestHolder extends RecyclerView.ViewHolder {
 
     TextView itemTitle;
-
     public NewsLatestHolder(@NonNull View itemView) {
         super(itemView);
         itemTitle = itemView.findViewById(R.id.item_title);

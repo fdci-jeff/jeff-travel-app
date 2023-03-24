@@ -5,8 +5,9 @@ public class NewsLatestModel {
     private String title;
     private String image;
 
-    public NewsLatestModel(String title) {
+    public NewsLatestModel(String title, String image) {
         this.title = title;
+        this.image = image;
     }
 
     public int getId() {

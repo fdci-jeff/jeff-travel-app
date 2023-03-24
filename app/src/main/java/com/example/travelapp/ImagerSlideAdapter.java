@@ -1,25 +1,19 @@
 package com.example.travelapp;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+
 import android.content.Context;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideModule;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ImagerSlideAdapter extends PagerAdapter {
     private final ArrayList<String> imageUrls;

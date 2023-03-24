@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
 
+    private CardView cardView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -62,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.view_pager);
         tViewPager = findViewById(R.id.tab_view_pager);
         tabLayout = findViewById(R.id.category_tab);
-
         String token = getTokenFromSharedPreferences();
         if (token != null && !token.isEmpty()) {
             checkToken(token);

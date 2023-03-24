@@ -1,8 +1,10 @@
 package com.example.travelapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -135,19 +137,6 @@ public class LatestFragment extends Fragment {
         okHttpClient.dispatcher().cancelAll();
     }
 
-
-    private List<NewsLatestModel> getData() {
-        ArrayList<String> temp_latest = getArguments().getStringArrayList("latest");
-        Log.d("fragment", "getData: " + temp_latest);
-        news_data = new ArrayList<>();
-        news_data.add(new NewsLatestModel("title1"));
-        news_data.add(new NewsLatestModel("title1"));
-        news_data.add(new NewsLatestModel("title1"));
-        news_data.add(new NewsLatestModel("title1"));
-
-        return news_data;
-    }
-
     private List<NewsLatestModel> parseResponse(JSONObject responseBody) {
 
         List<NewsLatestModel> data = new ArrayList<>();
@@ -160,7 +149,8 @@ public class LatestFragment extends Fragment {
 
                 if (!newsObject.isNull("image")) {
                     String title = newsObject.getString("title");
-                    NewsLatestModel item = new NewsLatestModel(title);
+                    String image = newsObject.getString("image");
+                    NewsLatestModel item = new NewsLatestModel(title, image);
                     data.add(item);
                 }
             }
@@ -169,15 +159,6 @@ public class LatestFragment extends Fragment {
             e.printStackTrace();
         }
 
-//        JSONArray newsArray = responseBody.getJSONArray("news");
-//
-//        for (int i = 0; i < newsArray.length(); i++) {
-//            JSONObject newsObject = newsArray.getJSONObject(i);
-//            if (!newsObject.isNull("image")) {
-//                String title = newsObject.getString("title");
-//                temp_latest.add(title);
-//            }
-//        }
         return  data;
     }
 }
